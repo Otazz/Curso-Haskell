@@ -5,19 +5,28 @@
 
 module Main where
 
+dobra x = x + x
+quadruplica x = dobra (dobra x)
+
+fatorial2 n = product [1..n]
+
 -- Exercício 01
 --
 -- Escreva uma função que retorne a raíz de uma equação
 -- do segundo grau
 raiz2Grau01 :: Floating a => a -> a -> a -> (a, a)
-raiz2Grau01 a b c = undefined
-
+raiz2Grau01 a b c = ((-b + sqrt(b*b - 4 *a*c))/ (2*a), (-b - sqrt(b*b - 4 * a * c))/(2*a))
 
 -- Exercício 02
 --
 -- Reescreva a função raiz2Grau utilizando where.
 raiz2Grau02 :: Floating a => a -> a -> a -> (a, a)
-raiz2Grau02 a b c = undefined
+raiz2Grau02 a b c = (x1, x2)
+  where
+    delta = b^2 - 4 *a*c
+    a2    = 2 * a
+    x1    = (-b + sqrt delta) / a2
+    x2    = (-b - sqrt delta) / a2
 
 
 -- Exercício 03
@@ -25,7 +34,16 @@ raiz2Grau02 a b c = undefined
 -- Utilizando condicionais, reescreva a função raiz2Grau para retornar
 -- (0,0) no caso de delta negativo.  Note a mudança na assinatura.
 raiz2Grau03 :: (Ord a, Floating a) => a -> a -> a -> (a, a)
-raiz2Grau03 a b c = undefined
+raiz2Grau03 a b c = (x1, x2)
+  where
+    delta = b^2 - 4 *a*c
+    a2    = 2 * a
+    x1    =  if delta >= 0
+             then (-b + sqrt delta) / a2
+             else 0
+    x2    = if delta >= 0
+            then (-b - sqrt delta) / a2
+            else 0
 
 
 -- Exercício 04
@@ -33,7 +51,16 @@ raiz2Grau03 a b c = undefined
 -- Utilizando guards, reescreva a função raiz2Grau para retornar um
 -- erro com raízes negativas. Utilize a função error
 raiz2Grau04 :: (Ord a, Floating a) => a -> a -> a -> (a, a)
-raiz2Grau04 a b c = error "Mensagem de erro"
+raiz2Grau04 a b c = (x1, x2)
+  where
+    delta = b^2 - 4 *a*c
+    a2    = 2 * a
+    x1    =  if delta >= 0
+             then (-b + sqrt delta) / a2
+             else 0
+    x2    = if delta >= 0
+            then (-b - sqrt delta) / a2
+            else 0
 
 
 -- Exercício 05
@@ -59,8 +86,8 @@ ex06 = head (tail [0..10])
 -- take/drop/head.  O nome foi mudado para (!!!) para evitar conflito
 -- de nomes. Outra alternativa seria incluir no cabeçalho:
 -- import Prelude hiding ((!!))
-(!!!) :: a -- Corrija os tipos
-(!!!) = undefined -- Corrija os parâmetros
+(!!!) :: [a] -> Int -> a -- Corrija os tipos
+(!!!) xs n = head(drop n xs) -- Corrija os parâmetros
 
 
 -- Exercício 08
@@ -74,16 +101,18 @@ fatorial = undefined -- corrija os parâmetros
 --
 -- Implemente a função take. Se n <= 0 deve retornar uma lista vazia.
 take' :: Int -> [a] -> [a]
-take' n = undefined
+take' n (x:xs)
+  | n <= 0 = []
+  | otherwise = 
+    x : take' (n-1) xs
 
 
 -- Exercício 10
 --
 -- Defina a função length utilizando compreensão de listas.  Dica,
 -- você pode somar uma lista de 1s do mesmo tamanho da sua lista.
-length' :: a -- Corrija o tipo
-length' = undefined -- Corrija os parâmetros
-
+length' :: Num a => [t] -> a
+length' xs = sum [1 | _ <- xs]
 
 -- Exercício 11
 --
@@ -92,8 +121,8 @@ length' = undefined -- Corrija os parâmetros
 divisores :: Int -> [Int]
 divisores n = [x | x <- [1..n], n `mod` x == 0]
 
-primo :: a -- Corrija o tipo
-primo = undefined -- Corrija os parâmetros
+primo :: Int -> Bool -- Corrija o tipo
+primo n = divisores n == [1,n]
 
 
 -- Exercício 12
@@ -102,8 +131,13 @@ primo = undefined -- Corrija os parâmetros
 -- verdadeiro se uma lista está ordenada. Utilize também a função and
 -- que retorna verdadeiro se todos os elementos da lista forem
 -- verdadeiros.
+pairs::[a]->[(a,a)]
+pairs xs = zip xs (tail xs)
+
 sorted :: Ord a => [a] -> Bool
-sorted = undefined
+-- sorted xs = length [1 | (x,y) <- pairs xs, x >= y] == 0 
+sorted xs = and [x>=y | (x,y) <- pairs xs]
+
 
 
 -- Exercício 13
